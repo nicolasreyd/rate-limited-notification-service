@@ -1,5 +1,6 @@
 package application.ratelimiter;
 
+import domain.Notification;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -18,6 +19,11 @@ public class BasicRateLimit extends RateLimiterProcessor{
   @Override
   int getRateLimit() {
     return 1;
+  }
+
+  @Override
+  boolean applies(Notification notification) {
+    return true;
   }
 
 }

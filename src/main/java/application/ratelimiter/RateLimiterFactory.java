@@ -1,25 +1,23 @@
 package application.ratelimiter;
 
 import domain.Notification;
-import lombok.NoArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
-@NoArgsConstructor
 public class RateLimiterFactory {
+  List<RateLimiterProcessor> availableProcessors;
 
-  public static final String STATUS = "status";
-  public static final String MARKETING = "marketing";
+  public RateLimiterFactory() {
+    availableProcessors = new ArrayList<>();
+    availableProcessors.add(new RateLimiterStatusByHours());
+    availableProcessors.add(new RateLimiterMarketingByMinutes());
+    availableProcessors.add(new BasicRateLimit());
+  }
 
   public RateLimiterProcessor getProcessor(Notification notification) {
-    RateLimiterProcessor processor = new BasicRateLimit();
-    switch (notification.getType()) {
-      case STATUS:
-        processor = new RateLimiterStatusByHours();
-        break;
-      case MARKETING:
-        processor = new RateLimiterMarketingByMinutes();
-        break;
-    }
-
-    return processor;
+    return availableProcessors.stream()
+        .filter(rateLimiterProcessor -> rateLimiterProcessor.applies(notification))
+        .findFirst()
+        .orElse(new BasicRateLimit());
   }
 }

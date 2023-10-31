@@ -1,9 +1,12 @@
 package application.ratelimiter;
 
+import domain.Notification;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class RateLimiterMarketingByMinutes extends RateLimiterProcessor {
+
+  private static final String MARKETING = "marketing";
 
   @Override
   long getTimeDifference(LocalDateTime recordTime, LocalDateTime actualRecordTime) {
@@ -18,6 +21,11 @@ public class RateLimiterMarketingByMinutes extends RateLimiterProcessor {
   @Override
   int getRateLimit() {
     return 30;
+  }
+
+  @Override
+  boolean applies(Notification notification) {
+    return MARKETING.equals(notification.getType());
   }
 
 }

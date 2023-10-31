@@ -1,5 +1,6 @@
 package application.ratelimiter;
 
+import domain.Notification;
 import domain.User;
 import java.time.LocalDateTime;
 
@@ -34,4 +35,6 @@ public abstract class RateLimiterProcessor {
   abstract int getMaxNotifications();
 
   abstract int getRateLimit();
+
+  abstract boolean applies(Notification notification);
 }

@@ -3,8 +3,12 @@ package application;
 import application.ratelimiter.RateLimiterFactory;
 import application.ratelimiter.RateLimiterProcessor;
 import domain.Notification;
+import java.util.logging.Logger;
 
-public class NotificationServiceImpl implements NotificationService{
+
+public class NotificationServiceImpl implements NotificationService {
+  NotificationsGateway notificationsGateway = new NotificationsGatewayImpl();
+  private static final Logger log = Logger.getLogger(NotificationServiceImpl.class.toString());
 
   @Override
   public Integer send(Notification notification) {
@@ -12,11 +16,10 @@ public class NotificationServiceImpl implements NotificationService{
     RateLimiterProcessor processor = rateLimiterFactory.getProcessor(notification);
 
     if (processor.validateLimit(notification.getUser())) {
-      System.out.println("Message sent.");
-      return 1;
-    } else {
-      System.out.println("Too many messages sent.");
-      return 0;
+      log.info("Message sent.");
+      return notificationsGateway.sendNotification(notification);
     }
+    log.warning("Too many messages sent.");
+    return 0;
   }
 }

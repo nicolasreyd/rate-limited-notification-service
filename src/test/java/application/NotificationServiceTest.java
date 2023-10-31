@@ -1,13 +1,11 @@
 package application;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import domain.Notification;
 import domain.User;
 import java.time.LocalDateTime;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class NotificationServiceTest {
@@ -60,6 +58,29 @@ public class NotificationServiceTest {
         user.addRecord(LocalDateTime.now().minusHours(5));
         user.addRecord(LocalDateTime.now().minusMinutes(59));
         user.addRecord(LocalDateTime.now().minusMinutes(25));
+
+        //when
+        Integer result = notificationService.send(Notification.builder()
+            .type("marketing")
+            .user(user)
+            .content("first notification")
+            .build());
+
+        //then
+        assertEquals(result, 0);
+        assertEquals(user.getActionsRecordsSize(), 2);
+    }
+
+    @Test
+    public void sendMarketingNotificationOK() {
+        //given
+        NotificationService notificationService = new NotificationServiceImpl();
+        User user = new User("12345");
+        user.addRecord(LocalDateTime.now().minusHours(2));
+        user.addRecord(LocalDateTime.now().minusHours(3));
+        user.addRecord(LocalDateTime.now().minusHours(5));
+        user.addRecord(LocalDateTime.now().minusMinutes(59));
+        user.addRecord(LocalDateTime.now().minusMinutes(31));
 
         //when
         Integer result = notificationService.send(Notification.builder()
